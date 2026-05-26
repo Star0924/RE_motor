@@ -1,0 +1,3 @@
+../Core/Src/joint.c:14:6:Joint_Init	16	static
+../Core/Src/joint.c:22:6:Joint_Update	24	static
+../Core/Src/joint.c:67:6:joint_config	24	static

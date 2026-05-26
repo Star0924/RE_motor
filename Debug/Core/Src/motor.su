@@ -1,0 +1,4 @@
+../Core/Src/motor.c:5:6:Motor_Init	16	static
+../Core/Src/motor.c:12:6:Encoder_Init	16	static
+../Core/Src/motor.c:19:6:Motor_Set	24	static
+../Core/Src/motor.c:68:6:Encoder_Update	40	static
