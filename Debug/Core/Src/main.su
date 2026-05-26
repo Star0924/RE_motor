@@ -1,8 +1,8 @@
-../Core/Src/main.c:81:6:Send_Status_To_Pi	96	static
-../Core/Src/main.c:112:5:main	8	static
-../Core/Src/main.c:181:6:SystemClock_Config	88	static
-../Core/Src/main.c:225:6:HAL_TIM_PeriodElapsedCallback	24	static
-../Core/Src/main.c:246:6:HAL_GPIO_EXTI_Callback	24	static
-../Core/Src/main.c:271:6:HAL_UART_RxCpltCallback	48	static
-../Core/Src/main.c:311:6:HAL_UART_ErrorCallback	16	static
-../Core/Src/main.c:325:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:78:6:Send_Status_To_Pi	96	static
+../Core/Src/main.c:99:5:main	8	static
+../Core/Src/main.c:161:6:SystemClock_Config	88	static
+../Core/Src/main.c:205:6:HAL_TIM_PeriodElapsedCallback	24	static
+../Core/Src/main.c:213:6:HAL_GPIO_EXTI_Callback	24	static
+../Core/Src/main.c:238:6:HAL_UART_RxCpltCallback	48	static
+../Core/Src/main.c:275:6:HAL_UART_ErrorCallback	16	static
+../Core/Src/main.c:289:6:Error_Handler	4	static,ignoring_inline_asm

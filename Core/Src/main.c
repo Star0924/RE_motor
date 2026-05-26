@@ -42,7 +42,6 @@
 /* USER CODE BEGIN PD */
 #define t 0.01f  // t = 0.01
 
-
 #define RX_BUF_SIZE 128
 #define TX_BUF_SIZE 128
 
@@ -57,8 +56,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-char tx_mes[64];
 float time = 0;
 float volt = 0;
 
@@ -80,23 +77,13 @@ void SystemClock_Config(void);
 
 void Send_Status_To_Pi(void)
 {
-    // ⭐【關鍵修改】：把原本的 _ref 全部拿掉，改回傳真實的速度 omega
     sprintf((char*)tx_buf, "#%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d\n",
             joint[0].omega, joint[1].omega, joint[2].omega,
             joint[3].omega, joint[4].omega, joint[5].omega,
 			gripper_status);
 
-    // 使用一般阻塞發送，限時 50ms 內發完
     HAL_UART_Transmit(&huart2, tx_buf, strlen((char*)tx_buf), 50);
 }
-//void Send_Status_To_Pi(void)
-//{
-//    // 這裡會印出 Parsed 數量，以及前兩顆馬達的 omega_ref
-//    sprintf((char*)tx_buf, "Parsed:%d | Ref0:%.2f, Ref1:%.2f\n",
-//            debug_parsed_count, joint[0].omega_ref, joint[1].omega_ref);
-//
-//    HAL_UART_Transmit(&huart2, tx_buf, strlen((char*)tx_buf), 100);
-//}
 
 /* USER CODE END PFP */
 
@@ -160,13 +147,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  if (HAL_GetTick() - last_rx_time > 250) {
-//		for(int i=0; i<6; i++) {
-//			joint[i].omega_ref = 0.0f;
-//		}
-//	  }
-
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -225,20 +205,7 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim->Instance == TIM6){
-//		static uint16_t traj_idx = 0;
-//
-//		joint.theta_ref = moveit_traj[traj_idx].theta;
-//		joint.omega_ref = moveit_traj[traj_idx].omega;
-//
-//		traj_idx++;
-//		if (traj_idx >= TRAJ_LEN)traj_idx = TRAJ_LEN - 1;
-
 		for(int i=0; i<=5; i++)Joint_Update(&joint[i], t);
-//		Motor_Set(&joint[1].mot, joint[1].mot.volt);
-//		joint[1].mot.volt += 0.01;
-//		sprintf(tx_mes,"%.2f,%.3f,%.3f\r\n", time, joint[2].theta, joint[2].omega);
-//		sprintf(tx_mes,"%.2f,%.3f,%.3f,%.3f,%.3f,%.3f\r\n", time, joint.outer_val, joint.omega_ref, joint.omega, joint.theta_ref, joint.theta);
-//		HAL_UART_Transmit(&huart2, (uint8_t*)tx_mes, strlen(tx_mes), 100);
 		time += t;
 	}
 }
@@ -275,7 +242,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         // 情況 A：還沒收到換行字元 ('\n')
         if(rx_data != '\n')
         {
-            // 【安全防護】：確保 rx_index 不會超過陣列大小，預留 1 格給 '\0'
+            // 確保 rx_index 不會超過陣列大小，預留 1 格給 '\0'
             if(rx_index < RX_BUF_SIZE - 1)
             {
                 rx_buf[rx_index++] = rx_data;
@@ -286,9 +253,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         else
         {
             rx_buf[rx_index] = '\0'; // 補上字串結尾符號
-
-            // 使用 sscanf 解析字串
-            // 【安全防護】：sscanf 會回傳它成功讀到了幾個變數
             int parsed_count = sscanf((char*)rx_buf,
                                       "$%f,%f,%f,%f,%f,%f,%d",
                                       &joint[0].omega_ref, &joint[1].omega_ref, &joint[2].omega_ref,

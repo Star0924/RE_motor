@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0000e1d4  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000118f7  00000000  00000000  0000e204  2**0
+ 12 .debug_info   000118d7  00000000  00000000  0000e204  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00002b19  00000000  00000000  0001fafb  2**0
+ 13 .debug_abbrev 00002b16  00000000  00000000  0001fadb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000ef8  00000000  00000000  00022618  2**3
+ 14 .debug_aranges 00000ef8  00000000  00000000  000225f8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00000bd9  00000000  00000000  00023510  2**0
+ 15 .debug_rnglists 00000bd9  00000000  00000000  000234f0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00023bbe  00000000  00000000  000240e9  2**0
+ 16 .debug_macro  00023bbe  00000000  00000000  000240c9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00013852  00000000  00000000  00047ca7  2**0
+ 17 .debug_line   00013850  00000000  00000000  00047c87  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000d40cf  00000000  00000000  0005b4f9  2**0
+ 18 .debug_str    000d40c8  00000000  00000000  0005b4d7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0012f5c8  2**0
+ 19 .comment      00000043  00000000  00000000  0012f59f  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00005514  00000000  00000000  0012f60c  2**2
+ 20 .debug_frame  00005514  00000000  00000000  0012f5e4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000063  00000000  00000000  00134b20  2**0
+ 21 .debug_line_str 00000063  00000000  00000000  00134af8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2697,7 +2697,6 @@ void Send_Status_To_Pi(void)
  8001c6c:	e92d 4fb0 	stmdb	sp!, {r4, r5, r7, r8, r9, sl, fp, lr}
  8001c70:	b090      	sub	sp, #64	@ 0x40
  8001c72:	af0c      	add	r7, sp, #48	@ 0x30
-    // ⭐【關鍵修改】：把原本的 _ref 全部拿掉，改回傳真實的速度 omega
     sprintf((char*)tx_buf, "#%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d\n",
             joint[0].omega, joint[1].omega, joint[2].omega,
  8001c74:	4b2a      	ldr	r3, [pc, #168]	@ (8001d20 <Send_Status_To_Pi+0xb4>)
@@ -2761,7 +2760,6 @@ void Send_Status_To_Pi(void)
  8001cfc:	f006 f91a 	bl	8007f34 <siprintf>
 			gripper_status);
 
-    // 使用一般阻塞發送，限時 50ms 內發完
     HAL_UART_Transmit(&huart2, tx_buf, strlen((char*)tx_buf), 50);
  8001d00:	480a      	ldr	r0, [pc, #40]	@ (8001d2c <Send_Status_To_Pi+0xc0>)
  8001d02:	f7fe fad5 	bl	80002b0 <strlen>
@@ -3029,11 +3027,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8001ea0:	4a12      	ldr	r2, [pc, #72]	@ (8001eec <HAL_TIM_PeriodElapsedCallback+0x58>)
  8001ea2:	4293      	cmp	r3, r2
  8001ea4:	d11d      	bne.n	8001ee2 <HAL_TIM_PeriodElapsedCallback+0x4e>
-//		joint.omega_ref = moveit_traj[traj_idx].omega;
-//
-//		traj_idx++;
-//		if (traj_idx >= TRAJ_LEN)traj_idx = TRAJ_LEN - 1;
-
 		for(int i=0; i<=5; i++)Joint_Update(&joint[i], t);
  8001ea6:	2300      	movs	r3, #0
  8001ea8:	60fb      	str	r3, [r7, #12]
@@ -3052,11 +3045,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8001ec8:	68fb      	ldr	r3, [r7, #12]
  8001eca:	2b05      	cmp	r3, #5
  8001ecc:	ddee      	ble.n	8001eac <HAL_TIM_PeriodElapsedCallback+0x18>
-//		Motor_Set(&joint[1].mot, joint[1].mot.volt);
-//		joint[1].mot.volt += 0.01;
-//		sprintf(tx_mes,"%.2f,%.3f,%.3f\r\n", time, joint[2].theta, joint[2].omega);
-//		sprintf(tx_mes,"%.2f,%.3f,%.3f,%.3f,%.3f,%.3f\r\n", time, joint.outer_val, joint.omega_ref, joint.omega, joint.theta_ref, joint.theta);
-//		HAL_UART_Transmit(&huart2, (uint8_t*)tx_mes, strlen(tx_mes), 100);
 		time += t;
  8001ece:	4b0a      	ldr	r3, [pc, #40]	@ (8001ef8 <HAL_TIM_PeriodElapsedCallback+0x64>)
  8001ed0:	edd3 7a00 	vldr	s15, [r3]
@@ -3210,7 +3198,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
  8001fce:	2b0a      	cmp	r3, #10
  8001fd0:	d00f      	beq.n	8001ff2 <HAL_UART_RxCpltCallback+0x3a>
         {
-            // 【安全防護】：確保 rx_index 不會超過陣列大小，預留 1 格給 '\0'
+            // 確保 rx_index 不會超過陣列大小，預留 1 格給 '\0'
             if(rx_index < RX_BUF_SIZE - 1)
  8001fd2:	4b20      	ldr	r3, [pc, #128]	@ (8002054 <HAL_UART_RxCpltCallback+0x9c>)
  8001fd4:	881b      	ldrh	r3, [r3, #0]
@@ -3242,9 +3230,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
  8001ff8:	4b17      	ldr	r3, [pc, #92]	@ (8002058 <HAL_UART_RxCpltCallback+0xa0>)
  8001ffa:	2100      	movs	r1, #0
  8001ffc:	5499      	strb	r1, [r3, r2]
-
-            // 使用 sscanf 解析字串
-            // 【安全防護】：sscanf 會回傳它成功讀到了幾個變數
             int parsed_count = sscanf((char*)rx_buf,
  8001ffe:	4b17      	ldr	r3, [pc, #92]	@ (800205c <HAL_UART_RxCpltCallback+0xa4>)
  8002000:	9304      	str	r3, [sp, #16]
