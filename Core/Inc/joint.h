@@ -25,6 +25,7 @@ typedef struct {
     float theta_ref, omega_ref;
     float gear;
     Mode_t mode;
+    uint8_t calibration;
 } Joint_t;
 
 extern Joint_t joint[6];

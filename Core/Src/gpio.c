@@ -57,8 +57,8 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, M4_dirA_Pin|M4_dirB_Pin|M5_dirA_Pin|M5_dirB_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : button4_Pin button5_Pin button5__Pin */
-  GPIO_InitStruct.Pin = button4_Pin|button5_Pin|button5__Pin;
+  /*Configure GPIO pins : button4_Pin button5__Pin */
+  GPIO_InitStruct.Pin = button4_Pin|button5__Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

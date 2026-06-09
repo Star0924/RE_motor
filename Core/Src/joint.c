@@ -17,6 +17,7 @@ void Joint_Init(Joint_t *j)
     j->theta_last = 0;
     j->theta = 0;
     j->omega = 0;
+    j->calibration = 0;
 }
 
 void Joint_Update(Joint_t *j, float dt)
@@ -159,7 +160,7 @@ void joint_config(){
 	/* ===== Joint ===== */
 	joint[0].gear = 596.0f;
 	joint[0].mode = VEL_MODE;
-	joint[0].theta_ref = 0.0;
+	joint[0].theta_ref = 0.0; //degree
 	joint[0].omega_ref = 0.0;
 
 	joint[1].gear = 721.0f;
@@ -180,12 +181,12 @@ void joint_config(){
 	joint[4].gear = 488.0f;
 	joint[4].mode = VEL_MODE;
 	joint[4].theta_ref = 0.0;
-	joint[4].omega_ref = 0.0;
+	joint[4].omega_ref = -20.0;
 
 	joint[5].gear = 488.0f;
 	joint[5].mode = VEL_MODE;
 	joint[5].theta_ref = 0.0;
-	joint[5].omega_ref = 0.0;
+	joint[5].omega_ref = -20.0;
 
 	for(int i=0; i<=5; i++)Joint_Init(&joint[i]);
 
